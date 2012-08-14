@@ -1,0 +1,28 @@
+body{
+	background-color: #bbbbbb;
+	text-align: center;
+	/*overflow: hidden;*/
+	padding: 0px;
+	margin: 0px;
+}
+
+canvas{
+	border: 1px solid black;
+
+}
+div{
+	width:100px;
+	height:100px;
+	background-color: #ff0000;
+	margin-top:500px;
+	display: inline-block;
+	transition: height 1s;
+	-moz-transition: height 1s; /* Firefox 4 */
+	-webkit-transition: height 1s; /* Safari and Chrome */
+	-o-transition: height 1s; /* Opera */
+
+}
+
+div:hover{
+	height:500px;
+}
