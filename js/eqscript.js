@@ -26,7 +26,8 @@ function init(){
 	var canvas = document.getElementById('myCanvas');
 	var ctx = canvas.getContext('2d');
 	window.addEventListener('keydown',doKeyDown,true);
-	//window.addEventListener('keyup',doKeyUp,true);
+	window.addEventListener('keyup',doKeyUp,true);
+
 	return setInterval(draw, 10);
 }
 	
@@ -75,7 +76,7 @@ function draw(){
 	ctx.fillRect(1040,ypos,swidth,sheight);
 	ctx.clearRect(1040, ypos,swidth, h8);
 
-	console.log(h1);
+	//console.log(h1);
 }
 
 function doKeyDown(evt){
@@ -83,35 +84,35 @@ function doKeyDown(evt){
 
 		case 49:
 		h1 = h1 - 280;
-		sound(100);
+		Synth(100);
 		break;
 		case 50:
 		h2 = h2 - 280;
-		sound(200);
+		Synth(200);
 		break;
 		case 51:
 		h3 = h3 - 280;
-		sound(300);
+		Synth(300);
 		break;
 		case 52:
 		h4 = h4 - 280;
-		sound(400);
+		Synth(400);
 		break;
 		case 55:
 		h5 = h5 - 280;
-		sound(500);
+		Synth(500);
 		break;
 		case 56:
 		h6 = h6 - 280;
-		sound(600);
+		Synth(600);
 		break;
 		case 57:
 		h7 = h7 - 280;
-		sound(700);
+		Synth(700);
 		break;
 		case 48:
 		h8 = h8 - 280;
-		sound(800);
+		Synth(800);
 		break;
 	}
 
@@ -160,14 +161,35 @@ function doKeyUp(evt){
 		}
 		break;
 	}
+	console.log(evt.keyCode);
 }
 
-function sound(pitch){
+function Synth(frequency){
 	var audiolet = new Audiolet();
-	var sine = new Sine(audiolet,pitch);
-	sine.connect(audiolet.output);
+    var sine = new Sine(audiolet, frequency);
+    var modulator = new Saw(audiolet, 2 * frequency);
+   	modulatorMulAdd = new MulAdd(audiolet, frequency/2, frequency);
+   	var gain = new Gain(audiolet);
+   	var envelope = new PercussiveEnvelope(audiolet, 0, 0.1, 0.5, 
+   			function(){
+   				audiolet.scheduler.addRelative(0.5);
+   			}.bind(this)
+   		);
+	
+	modulator.connect(modulatorMulAdd);
+	modulatorMulAdd.connect(sine);
+	envelope.connect(gain, 0, 1);
+	sine.connect(gain);
+	gain.connect(audiolet.output);
 }
+
+/*function animate(){
+	h1++;
+	if(level==300){
+		clearInterval(timeVar);
+	}
+}*/
 
 window.addEventListener('keydown',doKeyDown,true);
-//window.addEventListener('keyup',doKeyUp,true);
+window.addEventListener('keyup',doKeyUp,true);
 
